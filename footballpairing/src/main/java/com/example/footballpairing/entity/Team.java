@@ -31,7 +31,7 @@ public class Team {
     @Column(name = "team_group")
     private String group;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
     private Set<Player> players;
 
 }

@@ -1,8 +1,10 @@
 package com.example.footballpairing.dto.team;
 
+import com.example.footballpairing.dto.player.PlayerResponse;
 import com.example.footballpairing.entity.Player;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -16,5 +18,5 @@ public class TeamResponse {
     private String name;
     private String manager;
     private String group;
-    private Set<Player> players;
+    private List<PlayerResponse> players;
 }
