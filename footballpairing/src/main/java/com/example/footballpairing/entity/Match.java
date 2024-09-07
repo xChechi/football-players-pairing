@@ -34,5 +34,7 @@ public class Match {
     private LocalDate date;
 
     @NotNull
-    private String score;
+    private String regularScore;
+
+    private String penaltyScore;
 }
