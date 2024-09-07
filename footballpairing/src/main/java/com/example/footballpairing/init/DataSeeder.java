@@ -4,6 +4,9 @@ import com.example.footballpairing.entity.Match;
 import com.example.footballpairing.entity.Player;
 import com.example.footballpairing.entity.Team;
 import com.example.footballpairing.entity.Record;
+import com.example.footballpairing.exception.MatchNotFoundException;
+import com.example.footballpairing.exception.PlayerNotFoundException;
+import com.example.footballpairing.exception.TeamNotFoundException;
 import com.example.footballpairing.repository.MatchRepository;
 import com.example.footballpairing.repository.PlayerRepository;
 import com.example.footballpairing.repository.RecordRepository;
@@ -56,7 +59,7 @@ public class DataSeeder implements CommandLineRunner {
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
 
-                Team team = teamRepository.findById(Integer.parseInt(values[4])).orElseThrow(() -> new RuntimeException(""));
+                Team team = teamRepository.findById(Integer.parseInt(values[4])).orElseThrow(() -> new TeamNotFoundException("Team not exist in database"));
 
                 var player = Player.builder()
                         .teamNumber(values[1])
@@ -99,8 +102,8 @@ public class DataSeeder implements CommandLineRunner {
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
 
-                Team firstTeam = teamRepository.findById(Integer.parseInt(values[1])).orElseThrow(() -> new RuntimeException(""));
-                Team secondTeam = teamRepository.findById(Integer.parseInt(values[2])).orElseThrow(() -> new RuntimeException(""));
+                Team firstTeam = teamRepository.findById(Integer.parseInt(values[1])).orElseThrow(() -> new TeamNotFoundException("Team not exist in database"));
+                Team secondTeam = teamRepository.findById(Integer.parseInt(values[2])).orElseThrow(() -> new TeamNotFoundException("Team not exist in database"));
 
                 var match = Match.builder()
                         .firstTeam(firstTeam)
@@ -123,8 +126,8 @@ public class DataSeeder implements CommandLineRunner {
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
 
-                Player player = playerRepository.findById(Integer.parseInt(values[1])).orElseThrow(() -> new RuntimeException(""));
-                Match match = matchRepository.findById(Integer.parseInt(values[2])).orElseThrow(() -> new RuntimeException(""));
+                Player player = playerRepository.findById(Integer.parseInt(values[1])).orElseThrow(() -> new PlayerNotFoundException("Player not exist in database"));
+                Match match = matchRepository.findById(Integer.parseInt(values[2])).orElseThrow(() -> new MatchNotFoundException("Match not exist in database"));
 
                 var record = Record.builder()
                         .player(player)
