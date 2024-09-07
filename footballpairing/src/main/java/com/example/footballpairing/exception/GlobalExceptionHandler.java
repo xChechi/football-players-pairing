@@ -24,4 +24,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handlerMatchNotFound (MatchNotFoundException msg) {
         return new ResponseEntity<>(msg.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(DuplicatePlayerException.class)
+    public ResponseEntity<String> handlerDuplicatePlayer (DuplicatePlayerException msg) {
+        return new ResponseEntity<>(msg.getMessage(), HttpStatus.CONFLICT);
+    }
 }
