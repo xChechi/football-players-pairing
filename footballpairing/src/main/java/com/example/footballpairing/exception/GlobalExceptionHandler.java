@@ -29,4 +29,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handlerDuplicatePlayer (DuplicatePlayerException msg) {
         return new ResponseEntity<>(msg.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(DuplicateTeamException.class)
+    public ResponseEntity<String> handlerDuplicateTeam (DuplicateTeamException msg) {
+        return new ResponseEntity<>(msg.getMessage(), HttpStatus.CONFLICT);
+    }
 }
