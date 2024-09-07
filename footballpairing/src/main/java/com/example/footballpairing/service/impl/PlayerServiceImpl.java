@@ -51,7 +51,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public PlayerResponse createPlayer(PlayerRequest request) {
-        if (existByName(request.getFullName())) {
+        if (existByFullName(request.getFullName())) {
             throw new DuplicatePlayerException("Player already exist");
         }
         Player player = playerConverter.create(request);
@@ -74,8 +74,8 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public boolean existByName(String name) {
-        return playerRepository.findByName(name);
+    public boolean existByFullName(String fullName) {
+        return playerRepository.findByFullName(fullName).isPresent();
     }
 
 

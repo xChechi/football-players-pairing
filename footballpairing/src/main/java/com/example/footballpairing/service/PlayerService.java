@@ -14,5 +14,5 @@ public interface PlayerService {
     PlayerResponse createPlayer (PlayerRequest request);
     PlayerResponse updatePlayer (Integer id, PlayerUpdateRequest request);
 
-    boolean existByName (String name);
+    boolean existByFullName (String fullName);
 }
