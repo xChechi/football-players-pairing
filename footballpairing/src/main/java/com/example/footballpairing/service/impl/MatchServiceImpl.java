@@ -67,7 +67,11 @@ public class MatchServiceImpl implements MatchService {
         Team secondTeam = teamRepository.findById(request.getSecondTeamId()).orElseThrow(() -> new TeamNotFoundException("Team not exist in database"));
 
         Match match = matchRepository.findById(id).orElseThrow(() -> new MatchNotFoundException("Match not exist in database"));
-        LocalDate date = dateParser.parseDate(request.getDate().toString());
+
+        var date = dateParser.parseDate(request.getDate());
+        if(date.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Date must be in the past");
+        }
 
         match.setFirstTeam(firstTeam);
         match.setSecondTeam(secondTeam);
@@ -85,10 +89,12 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public boolean matchExists(Team firstTeam, Team secondTeam, LocalDate date) {
+    public boolean matchExists(Team firstTeam, Team secondTeam, String date) {
+        LocalDate parsedDate = dateParser.parseDate(date);
         return matchRepository.findAll().stream()
                 .anyMatch(match -> match.getFirstTeam().equals(firstTeam) &&
                         match.getSecondTeam().equals(secondTeam) &&
-                        match.getDate().equals(date));
+                        match.getDate().equals(parsedDate));
     }
+
 }

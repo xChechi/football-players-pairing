@@ -16,5 +16,5 @@ public interface MatchService {
     MatchResponse updateMatch (Integer id, MatchUpdateRequest request);
     void deleteMatchById (Integer id);
 
-    boolean matchExists(Team firstTeam, Team secondTeam, LocalDate date);
+    boolean matchExists(Team firstTeam, Team secondTeam, String date);
 }

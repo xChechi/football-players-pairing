@@ -11,6 +11,8 @@ import com.example.footballpairing.repository.TeamRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 @AllArgsConstructor
 public class MatchConverter implements EntityConverter<Match, MatchRequest, MatchResponse> {
@@ -25,10 +27,15 @@ public class MatchConverter implements EntityConverter<Match, MatchRequest, Matc
         Team firstTeam = teamRepository.findById(request.getFirstTeamId()).orElseThrow(() -> new TeamNotFoundException("Team not exist in database"));
         Team secondTeam = teamRepository.findById(request.getSecondTeamId()).orElseThrow(() -> new TeamNotFoundException("Team not exist in database"));
 
+        var date = dateParser.parseDate(request.getDate());
+        if(date.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Date must be in the past");
+        }
+
         return Match.builder()
                 .firstTeam(firstTeam)
                 .secondTeam(secondTeam)
-                .date(dateParser.parseDate(request.getDate().toString()))
+                .date(date)
                 .regularScore(request.getRegularScore())
                 .penaltyScore(request.getPenaltyScore())
                 .build();
