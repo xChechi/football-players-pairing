@@ -34,4 +34,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handlerDuplicateTeam (DuplicateTeamException msg) {
         return new ResponseEntity<>(msg.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(UnsupportedDateFormatException.class)
+    public ResponseEntity<String> handlerUnsupportedDateFormat (UnsupportedDateFormatException msg) {
+        return new ResponseEntity<>(msg.getMessage(), HttpStatus.CONFLICT);
+    }
 }

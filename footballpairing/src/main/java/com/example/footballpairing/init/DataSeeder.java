@@ -7,6 +7,7 @@ import com.example.footballpairing.entity.Record;
 import com.example.footballpairing.exception.MatchNotFoundException;
 import com.example.footballpairing.exception.PlayerNotFoundException;
 import com.example.footballpairing.exception.TeamNotFoundException;
+import com.example.footballpairing.exception.UnsupportedDateFormatException;
 import com.example.footballpairing.repository.MatchRepository;
 import com.example.footballpairing.repository.PlayerRepository;
 import com.example.footballpairing.repository.RecordRepository;
@@ -18,11 +19,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -105,10 +107,12 @@ public class DataSeeder implements CommandLineRunner {
                 Team firstTeam = teamRepository.findById(Integer.parseInt(values[1])).orElseThrow(() -> new TeamNotFoundException("Team not exist in database"));
                 Team secondTeam = teamRepository.findById(Integer.parseInt(values[2])).orElseThrow(() -> new TeamNotFoundException("Team not exist in database"));
 
+                LocalDate matchDate = parseDateWithMultipleFormats(values[3]);
+
                 var match = Match.builder()
                         .firstTeam(firstTeam)
                         .secondTeam(secondTeam)
-                        .date(LocalDate.parse(values[3], formatter))
+                        .date(matchDate)
                         .regularScore(extractRegularScore(values[4]))
                         .penaltyScore(extractPenaltyScore(values[4]))
                         .build();
@@ -167,6 +171,34 @@ public class DataSeeder implements CommandLineRunner {
             return matcher.group(1) + "-" + matcher.group(2);
         }
         return "";
+    }
+
+    private LocalDate parseDateWithMultipleFormats(String dateStr) {
+        List<DateTimeFormatter> formatters = List.of(
+                DateTimeFormatter.ofPattern("M/d/yyyy"),
+                DateTimeFormatter.ofPattern("MM/dd/yyyy"),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd"),
+                DateTimeFormatter.ofPattern("d/M/yyyy"),
+                DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+                DateTimeFormatter.ofPattern("yyyy/MM/dd"),
+                DateTimeFormatter.ofPattern("d MMM yyyy"),
+                DateTimeFormatter.ofPattern("dd MMM yyyy"),
+                DateTimeFormatter.ofPattern("d-MMM-yyyy"),
+                DateTimeFormatter.ofPattern("dd-MMM-yyyy"),
+                DateTimeFormatter.ofPattern("d MMMM yyyy"),
+                DateTimeFormatter.ofPattern("dd MMMM yyyy"),
+                DateTimeFormatter.ISO_DATE,
+                DateTimeFormatter.ISO_LOCAL_DATE
+        );
+
+        for (DateTimeFormatter formatter : formatters) {
+            try {
+                return LocalDate.parse(dateStr, formatter);
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+
+        throw new UnsupportedDateFormatException("Invalid Date format");
     }
 
 }
