@@ -39,4 +39,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handlerUnsupportedDateFormat (UnsupportedDateFormatException msg) {
         return new ResponseEntity<>(msg.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(DuplicateMatchException.class)
+    public ResponseEntity<String> handlerDuplicateMatch (DuplicateMatchException msg) {
+        return new ResponseEntity<>(msg.getMessage(), HttpStatus.CONFLICT);
+    }
 }
