@@ -7,11 +7,12 @@ import com.example.footballpairing.entity.Record;
 import com.example.footballpairing.exception.MatchNotFoundException;
 import com.example.footballpairing.exception.PlayerNotFoundException;
 import com.example.footballpairing.exception.TeamNotFoundException;
-import com.example.footballpairing.exception.UnsupportedDateFormatException;
 import com.example.footballpairing.repository.MatchRepository;
 import com.example.footballpairing.repository.PlayerRepository;
 import com.example.footballpairing.repository.RecordRepository;
 import com.example.footballpairing.repository.TeamRepository;
+import com.example.footballpairing.utility.DateParser;
+import com.example.footballpairing.utility.ScoreParser;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
@@ -23,10 +24,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Component
 @AllArgsConstructor
@@ -36,6 +33,8 @@ public class DataSeeder implements CommandLineRunner {
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
     private final RecordRepository recordRepository;
+    private final DateParser dateParser;
+    private final ScoreParser scoreParser;
 
     @Override
     public void run(String... args) throws Exception {
@@ -107,14 +106,14 @@ public class DataSeeder implements CommandLineRunner {
                 Team firstTeam = teamRepository.findById(Integer.parseInt(values[1])).orElseThrow(() -> new TeamNotFoundException("Team not exist in database"));
                 Team secondTeam = teamRepository.findById(Integer.parseInt(values[2])).orElseThrow(() -> new TeamNotFoundException("Team not exist in database"));
 
-                LocalDate matchDate = parseDateWithMultipleFormats(values[3]);
+                LocalDate matchDate = dateParser.parseDate(values[3]);
 
                 var match = Match.builder()
                         .firstTeam(firstTeam)
                         .secondTeam(secondTeam)
                         .date(matchDate)
-                        .regularScore(extractRegularScore(values[4]))
-                        .penaltyScore(extractPenaltyScore(values[4]))
+                        .regularScore(scoreParser.extractRegularScore(values[4]))
+                        .penaltyScore(scoreParser.extractPenaltyScore(values[4]))
                         .build();
 
                 matchRepository.save(match);
@@ -143,62 +142,6 @@ public class DataSeeder implements CommandLineRunner {
                 recordRepository.save(record);
             }
         }
-    }
-
-    private String extractRegularScore(String score) {
-        Pattern patternWithPenalties = Pattern.compile("(\\d+)?\\((\\d+)\\)-(\\d+)?\\((\\d+)\\)");
-        Matcher matcherWithPenalties = patternWithPenalties.matcher(score);
-
-        if (matcherWithPenalties.find()) {
-            String firstTeamScore = matcherWithPenalties.group(1) != null ? matcherWithPenalties.group(1) : "0";
-            String secondTeamScore = matcherWithPenalties.group(3) != null ? matcherWithPenalties.group(3) : "0";
-            return firstTeamScore + "-" + secondTeamScore;
-        }
-
-        Pattern patternWithoutPenalties = Pattern.compile("(\\d+)-(\\d+)");
-        Matcher matcherWithoutPenalties = patternWithoutPenalties.matcher(score);
-
-        if (matcherWithoutPenalties.find()) {
-            return matcherWithoutPenalties.group(1) + "-" + matcherWithoutPenalties.group(2);
-        }
-        return "";
-    }
-
-    private String extractPenaltyScore(String score) {
-        Pattern pattern = Pattern.compile("\\d+\\((\\d+)\\)-\\d+\\((\\d+)\\)");
-        Matcher matcher = pattern.matcher(score);
-        if (matcher.find()) {
-            return matcher.group(1) + "-" + matcher.group(2);
-        }
-        return "";
-    }
-
-    private LocalDate parseDateWithMultipleFormats(String dateStr) {
-        List<DateTimeFormatter> formatters = List.of(
-                DateTimeFormatter.ofPattern("M/d/yyyy"),
-                DateTimeFormatter.ofPattern("MM/dd/yyyy"),
-                DateTimeFormatter.ofPattern("yyyy-MM-dd"),
-                DateTimeFormatter.ofPattern("d/M/yyyy"),
-                DateTimeFormatter.ofPattern("dd/MM/yyyy"),
-                DateTimeFormatter.ofPattern("yyyy/MM/dd"),
-                DateTimeFormatter.ofPattern("d MMM yyyy"),
-                DateTimeFormatter.ofPattern("dd MMM yyyy"),
-                DateTimeFormatter.ofPattern("d-MMM-yyyy"),
-                DateTimeFormatter.ofPattern("dd-MMM-yyyy"),
-                DateTimeFormatter.ofPattern("d MMMM yyyy"),
-                DateTimeFormatter.ofPattern("dd MMMM yyyy"),
-                DateTimeFormatter.ISO_DATE,
-                DateTimeFormatter.ISO_LOCAL_DATE
-        );
-
-        for (DateTimeFormatter formatter : formatters) {
-            try {
-                return LocalDate.parse(dateStr, formatter);
-            } catch (DateTimeParseException ignored) {
-            }
-        }
-
-        throw new UnsupportedDateFormatException("Invalid Date format");
     }
 
 }
