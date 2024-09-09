@@ -4,19 +4,11 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-<<<<<<< HEAD
-        <option value="$PROJECT_DIR$/football-players-pairing-master/footballpairing/pom.xml" />
-      </list>
-    </option>
-  </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_22" default="true" project-jdk-name="openjdk-22" project-jdk-type="JavaSDK">
-=======
         <option value="$PROJECT_DIR$/footballpairing/pom.xml" />
       </list>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_19" default="true" project-jdk-name="corretto-19" project-jdk-type="JavaSDK">
->>>>>>> a2710910e5c4b749fcebe8e2d9e934ebb547dd69
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
