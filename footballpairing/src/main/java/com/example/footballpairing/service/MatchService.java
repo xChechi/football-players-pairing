@@ -5,7 +5,6 @@ import com.example.footballpairing.dto.match.MatchResponse;
 import com.example.footballpairing.dto.match.MatchUpdateRequest;
 import com.example.footballpairing.entity.Team;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface MatchService {

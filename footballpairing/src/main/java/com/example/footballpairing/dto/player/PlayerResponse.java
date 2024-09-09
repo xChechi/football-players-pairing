@@ -1,6 +1,5 @@
 package com.example.footballpairing.dto.player;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter

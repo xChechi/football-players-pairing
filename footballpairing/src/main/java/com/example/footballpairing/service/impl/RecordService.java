@@ -40,7 +40,7 @@
                 if (!processedPairs.contains(playerPair)) {
                     PlayerPairDto dto = recordConverter.toResponse(playerPair.getKey(), playerPair.getValue(), entry.getValue());
                     processedPairs.add(playerPair);
-                    processedPairs.add(new AbstractMap.SimpleEntry<>(playerPair.getValue(), playerPair.getKey())); // Add the reversed pair
+                    processedPairs.add(new AbstractMap.SimpleEntry<>(playerPair.getValue(), playerPair.getKey()));
                     playerPairDtos.add(dto);
                 }
             }

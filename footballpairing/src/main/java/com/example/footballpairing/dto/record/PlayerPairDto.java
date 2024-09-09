@@ -1,7 +1,6 @@
 package com.example.footballpairing.dto.record;
 
 import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
