@@ -17,9 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class MatchConverter implements EntityConverter<Match, MatchRequest, MatchResponse> {
 
-    private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
-    private final TeamConverter teamConverter;
     private final DateParser dateParser;
 
     @Override
